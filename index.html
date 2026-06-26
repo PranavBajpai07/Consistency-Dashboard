@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FAANG Consistency Dashboard</title>
+  <meta name="theme-color" content="#2f7d5d">
+  <link rel="manifest" href="manifest.json">
   <style>
     :root {
       color-scheme: light;
@@ -28,6 +30,27 @@
       --max: 1440px;
     }
 
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #101714;
+      --surface: #17211d;
+      --surface-2: #202d28;
+      --ink: #eff7f2;
+      --muted: #a8b8b0;
+      --line: #2d3b35;
+      --line-strong: #4b5e56;
+      --green: #77c69f;
+      --green-soft: #203c31;
+      --coral: #ee9274;
+      --coral-soft: #472b25;
+      --blue: #82bde1;
+      --blue-soft: #223746;
+      --gold: #dfbd63;
+      --gold-soft: #42351e;
+      --red: #f09696;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -44,6 +67,12 @@
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       letter-spacing: 0;
+    }
+
+    html[data-theme="dark"] body {
+      background:
+        linear-gradient(180deg, rgba(31, 45, 39, 0.94), rgba(16, 23, 20, 1) 280px),
+        var(--bg);
     }
 
     button,
@@ -78,6 +107,10 @@
       position: sticky;
       top: 0;
       z-index: 20;
+    }
+
+    html[data-theme="dark"] .topbar {
+      background: rgba(23, 33, 29, 0.88);
     }
 
     .topbar-inner {
@@ -186,6 +219,11 @@
       color: var(--red);
       border-color: #d7b6b6;
       background: #fffafa;
+    }
+
+    html[data-theme="dark"] .btn.danger {
+      border-color: #6b3b3b;
+      background: #2a1c1c;
     }
 
     .btn svg,
@@ -578,6 +616,12 @@
       transition: border-color 160ms ease, box-shadow 160ms ease;
     }
 
+    html[data-theme="dark"] input,
+    html[data-theme="dark"] select,
+    html[data-theme="dark"] textarea {
+      background: #111a17;
+    }
+
     textarea {
       min-height: 92px;
       resize: vertical;
@@ -657,7 +701,11 @@
 
     .target-panel,
     .reflection-panel,
-    .pipeline-panel {
+    .pipeline-panel,
+    .analytics-panel,
+    .roadmap-panel,
+    .dsa-panel,
+    .reminder-panel {
       padding: 18px;
     }
 
@@ -802,6 +850,162 @@
       transition: transform 160ms ease, border-color 160ms ease;
     }
 
+    .improvement-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 1.2fr) minmax(320px, 1fr);
+      gap: 16px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mini-stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: var(--surface-2);
+      min-width: 0;
+    }
+
+    .mini-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 780;
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+
+    .mini-stat strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 1.18rem;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .breakdown {
+      display: grid;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .breakdown-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 42px;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 760;
+    }
+
+    .breakdown-track {
+      height: 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+
+    .breakdown-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+    }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(15, minmax(12px, 1fr));
+      gap: 5px;
+      margin-top: 16px;
+    }
+
+    .heat-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      min-width: 0;
+    }
+
+    .roadmap-progress {
+      margin-top: 14px;
+    }
+
+    .roadmap-list,
+    .dsa-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .roadmap-item,
+    .dsa-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .roadmap-item label {
+      color: var(--ink);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.94rem;
+      font-weight: 820;
+    }
+
+    .roadmap-item p,
+    .dsa-item p {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .dsa-form {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr 0.9fr 0.65fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-top: 14px;
+    }
+
+    .dsa-item {
+      grid-template-columns: minmax(160px, 1.2fr) minmax(120px, 0.8fr) minmax(100px, 0.7fr) auto;
+      align-items: center;
+    }
+
+    .reminder-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .reminder-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .status-note {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
     .empty-state {
       border: 1px dashed var(--line-strong);
       border-radius: var(--radius);
@@ -823,7 +1027,8 @@
 
     @media (max-width: 1180px) {
       .hero-grid,
-      .lower-grid {
+      .lower-grid,
+      .improvement-grid {
         grid-template-columns: 1fr;
       }
 
@@ -836,6 +1041,10 @@
       }
 
       .pipeline-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dsa-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -883,10 +1092,14 @@
       .dashboard-grid,
       .profile-strip,
       .target-grid,
+      .analytics-grid,
       .reflection-grid,
       .reflection-notes,
       .field-grid,
       .pipeline-form,
+      .dsa-form,
+      .dsa-item,
+      .reminder-grid,
       .interview-item {
         grid-template-columns: 1fr;
       }
@@ -897,6 +1110,10 @@
 
       .pipeline-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .heatmap {
+        grid-template-columns: repeat(10, minmax(12px, 1fr));
       }
 
       .weekly-bars {
@@ -995,6 +1212,19 @@
       <circle cx="12" cy="12" r="1"></circle>
       <path d="M18 6 21 3"></path>
     </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 14.5A8 8 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"></path>
+    </symbol>
+    <symbol id="icon-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+      <path d="M11 18h2"></path>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+      <path d="M16 3v4"></path>
+      <path d="M8 3v4"></path>
+      <path d="M3 11h18"></path>
+    </symbol>
   </svg>
 
   <div class="app-shell">
@@ -1012,6 +1242,14 @@
         <div class="toolbar">
           <input id="datePicker" class="date-control" type="date" aria-label="Selected day">
           <button id="todayBtn" class="btn" type="button" title="Jump to today">Today</button>
+          <button id="themeBtn" class="btn" type="button" title="Toggle dark mode">
+            <svg aria-hidden="true"><use href="#icon-moon"></use></svg>
+            <span id="themeBtnLabel">Dark</span>
+          </button>
+          <button id="installBtn" class="btn" type="button" title="Install app">
+            <svg aria-hidden="true"><use href="#icon-phone"></use></svg>
+            Install
+          </button>
           <button id="exportBtn" class="btn" type="button" title="Download backup">
             <svg aria-hidden="true"><use href="#icon-download"></use></svg>
             Export
@@ -1322,13 +1560,168 @@
           <div id="interviewList" class="interview-list"></div>
         </article>
       </section>
+
+      <section class="improvement-grid" aria-label="Advanced preparation tools">
+        <div class="stack">
+          <article class="panel analytics-panel">
+            <div class="section-head">
+              <div>
+                <h2>Advanced Analytics</h2>
+                <p>See the trend behind the grind.</p>
+              </div>
+            </div>
+            <div class="analytics-grid">
+              <div class="mini-stat">
+                <span>30-day average</span>
+                <strong id="monthAverage">0%</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Best day</span>
+                <strong id="bestDay">No data</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Study total</span>
+                <strong id="studyTotal">0 min</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Prep total</span>
+                <strong id="prepTotal">0 min</strong>
+              </div>
+              <div class="mini-stat">
+                <span>DSA solved</span>
+                <strong id="dsaTotal">0</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Applications</span>
+                <strong id="applicationTotal">0</strong>
+              </div>
+            </div>
+            <div id="categoryBreakdown" class="breakdown" aria-label="Category score breakdown"></div>
+            <div id="heatmap" class="heatmap" aria-label="30 day consistency heatmap"></div>
+          </article>
+
+          <article class="panel reminder-panel">
+            <div class="section-head">
+              <div>
+                <h2>Calendar Reminders</h2>
+                <p>Export a 90-day training calendar.</p>
+              </div>
+            </div>
+            <div class="reminder-grid">
+              <label>Workout time <input data-setting="workoutTime" type="time"></label>
+              <label>Study time <input data-setting="studyTime" type="time"></label>
+              <label>Prep time <input data-setting="prepTime" type="time"></label>
+            </div>
+            <div class="reminder-actions">
+              <button id="downloadCalendarBtn" class="btn primary" type="button">
+                <svg aria-hidden="true"><use href="#icon-calendar"></use></svg>
+                Download .ics
+              </button>
+            </div>
+            <p id="pwaStatus" class="status-note">Open from GitHub Pages to enable install and offline support.</p>
+          </article>
+        </div>
+
+        <div class="stack">
+          <article class="panel roadmap-panel">
+            <div class="section-head">
+              <div>
+                <h2>FAANG Prep Roadmap</h2>
+                <p>Track the big preparation lanes.</p>
+              </div>
+            </div>
+            <div class="roadmap-progress progress-line">
+              <div class="progress-line-top">
+                <span>Roadmap complete</span>
+                <strong id="roadmapProgressText">0 / 0</strong>
+              </div>
+              <div class="line-track"><div id="roadmapProgress" class="line-fill"></div></div>
+            </div>
+            <div id="roadmapList" class="roadmap-list"></div>
+          </article>
+
+          <article class="panel dsa-panel">
+            <div class="section-head">
+              <div>
+                <h2>DSA Topic Tracker</h2>
+                <p>Know what is match-ready.</p>
+              </div>
+            </div>
+            <form id="dsaForm" class="dsa-form">
+              <input id="editingDsaId" type="hidden">
+              <label>Topic <input id="dsaTopicInput" type="text" required placeholder="Arrays, DP, graphs"></label>
+              <label>Category
+                <select id="dsaCategoryInput">
+                  <option>Core DSA</option>
+                  <option>System Design</option>
+                  <option>CS Fundamentals</option>
+                  <option>Behavioral</option>
+                </select>
+              </label>
+              <label>Status
+                <select id="dsaStatusInput">
+                  <option>Not started</option>
+                  <option>Learning</option>
+                  <option>Practicing</option>
+                  <option>Interview-ready</option>
+                </select>
+              </label>
+              <label>Solved <input id="dsaProblemsInput" type="number" min="0" step="1"></label>
+              <button id="saveDsaBtn" class="btn primary" type="submit">
+                <svg aria-hidden="true"><use href="#icon-plus"></use></svg>
+                Add
+              </button>
+            </form>
+            <div id="dsaList" class="dsa-list"></div>
+          </article>
+        </div>
+      </section>
     </main>
   </div>
 
   <script>
     const STORAGE_KEY = "consistency-dashboard-v1";
     const stages = ["Applied", "Recruiter", "Technical", "Final", "Offer", "Rejected"];
+    const dsaStatusFlow = ["Not started", "Learning", "Practicing", "Interview-ready"];
     const ringCircumference = 326.73;
+    const roadmapTemplate = [
+      {
+        id: "dsa-patterns",
+        title: "DSA pattern fluency",
+        detail: "Arrays, strings, hashing, two pointers, sliding window, stacks, queues, trees, graphs, heaps, greedy, and DP."
+      },
+      {
+        id: "system-design",
+        title: "System design stories",
+        detail: "Practice tradeoffs, APIs, databases, caching, queues, reliability, scaling, and clear verbal structure."
+      },
+      {
+        id: "cs-core",
+        title: "CS fundamentals",
+        detail: "Operating systems, networking, DBMS, OOP, concurrency, and language/runtime fundamentals."
+      },
+      {
+        id: "behavioral",
+        title: "Behavioral STAR bank",
+        detail: "Prepare leadership, conflict, ownership, failure, ambiguity, impact, and learning stories."
+      },
+      {
+        id: "resume-linkedin",
+        title: "Resume and LinkedIn polish",
+        detail: "Make projects, outcomes, metrics, and keywords recruiter-friendly for FAANG screening."
+      },
+      {
+        id: "mock-loop",
+        title: "Mock interview loop",
+        detail: "Schedule timed mocks, review recordings, fix weak patterns, and practice communication under pressure."
+      }
+    ];
+    const defaultDsaTopics = [
+      { id: "arrays", topic: "Arrays and strings", category: "Core DSA", status: "Practicing", problems: 0 },
+      { id: "trees", topic: "Trees and BST", category: "Core DSA", status: "Learning", problems: 0 },
+      { id: "graphs", topic: "Graphs", category: "Core DSA", status: "Not started", problems: 0 },
+      { id: "dp", topic: "Dynamic programming", category: "Core DSA", status: "Not started", problems: 0 }
+    ];
 
     const defaults = {
       goals: {
@@ -1340,7 +1733,15 @@
         streakScore: 70
       },
       entries: {},
-      interviews: []
+      interviews: [],
+      settings: {
+        theme: "light",
+        workoutTime: "07:00",
+        studyTime: "20:00",
+        prepTime: "21:30"
+      },
+      roadmap: roadmapTemplate.map((item) => ({ ...item, done: false })),
+      dsaTopics: defaultDsaTopics
     };
 
     let state = loadState();
@@ -1422,16 +1823,32 @@
       return state.entries[key];
     }
 
+    function mergeRoadmap(items) {
+      const saved = Array.isArray(items) ? items : [];
+      return roadmapTemplate.map((template) => {
+        const match = saved.find((item) => item.id === template.id);
+        return { ...template, done: Boolean(match && match.done) };
+      });
+    }
+
+    function normalizeState(input) {
+      const parsed = input || {};
+      return {
+        goals: { ...defaults.goals, ...(parsed.goals || {}) },
+        entries: parsed.entries || {},
+        interviews: Array.isArray(parsed.interviews) ? parsed.interviews : [],
+        settings: { ...defaults.settings, ...(parsed.settings || {}) },
+        roadmap: mergeRoadmap(parsed.roadmap),
+        dsaTopics: Array.isArray(parsed.dsaTopics) ? parsed.dsaTopics : structuredClone(defaults.dsaTopics)
+      };
+    }
+
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return structuredClone(defaults);
         const parsed = JSON.parse(raw);
-        return {
-          goals: { ...defaults.goals, ...(parsed.goals || {}) },
-          entries: parsed.entries || {},
-          interviews: Array.isArray(parsed.interviews) ? parsed.interviews : []
-        };
+        return normalizeState(parsed);
       } catch {
         return structuredClone(defaults);
       }
@@ -1442,7 +1859,7 @@
       $("#saveNote").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
 
-    function scoreEntry(entry) {
+    function scoreParts(entry) {
       const goals = state.goals;
       const workout = Math.min(25, percent(entry.workoutMinutes, goals.workoutMinutes) * 20 + (entry.workoutDone ? 5 : 0));
       const diet = Math.min(25, percent(entry.protein, goals.protein) * 12 + percent(entry.water, goals.water) * 8 + (entry.cleanMeals ? 5 : 0));
@@ -1455,7 +1872,12 @@
         percent(entry.applications, 2) * 1 +
         percent(entry.networking, 2) * 1
       );
-      return Math.round(workout + diet + study + prep);
+      return { workout, diet, study, prep };
+    }
+
+    function scoreEntry(entry) {
+      const parts = scoreParts(entry);
+      return Math.round(parts.workout + parts.diet + parts.study + parts.prep);
     }
 
     function streakEndingAt(key) {
@@ -1523,6 +1945,7 @@
       const activeCount = state.interviews.filter((item) => !["Offer", "Rejected"].includes(item.stage)).length;
       const nextInterview = getNextInterview();
 
+      document.documentElement.dataset.theme = state.settings.theme;
       $("#datePicker").value = selectedDate;
       $("#dateLabel").textContent = formatDate(selectedDate, { weekday: "long", month: "short", day: "numeric", year: "numeric" });
       $("#dayEyebrow").textContent = selectedDate === todayKey() ? "Today" : formatDate(selectedDate, { weekday: "long" });
@@ -1542,10 +1965,16 @@
       $("[data-entry]");
       $$("[data-entry]").forEach((input) => setInputValue(input, entry[input.dataset.entry]));
       $$("[data-goal]").forEach((input) => setInputValue(input, state.goals[input.dataset.goal]));
+      $$("[data-setting]").forEach((input) => setInputValue(input, state.settings[input.dataset.setting]));
+      $("#themeBtnLabel").textContent = state.settings.theme === "dark" ? "Light" : "Dark";
 
       renderProgressLines(entry);
       renderWeeklyBars(keys, scores);
       renderPipeline();
+      renderAnalytics();
+      renderRoadmap();
+      renderDsaTopics();
+      renderPwaStatus();
     }
 
     function renderProgressLines(entry) {
@@ -1645,6 +2074,123 @@
       }).join("");
     }
 
+    function renderAnalytics() {
+      const keys = Array.from({ length: 30 }, (_, index) => addDays(selectedDate, index - 29));
+      const entries = keys.map((key) => state.entries[key] || createEntry());
+      const scores = entries.map(scoreEntry);
+      const average = Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length);
+      const bestScore = Math.max(...scores);
+      const bestIndex = scores.indexOf(bestScore);
+      const totals = entries.reduce((acc, entry) => {
+        acc.study += numberValue(entry.studyMinutes);
+        acc.prep += numberValue(entry.prepMinutes);
+        acc.dsa += numberValue(entry.dsaProblems);
+        acc.applications += numberValue(entry.applications);
+        const parts = scoreParts(entry);
+        acc.parts.workout += parts.workout;
+        acc.parts.diet += parts.diet;
+        acc.parts.study += parts.study;
+        acc.parts.prep += parts.prep;
+        return acc;
+      }, { study: 0, prep: 0, dsa: 0, applications: 0, parts: { workout: 0, diet: 0, study: 0, prep: 0 } });
+
+      $("#monthAverage").textContent = average + "%";
+      $("#bestDay").textContent = bestScore > 0 ? formatDate(keys[bestIndex], { month: "short", day: "numeric" }) + " (" + bestScore + ")" : "No data";
+      $("#studyTotal").textContent = totals.study + " min";
+      $("#prepTotal").textContent = totals.prep + " min";
+      $("#dsaTotal").textContent = totals.dsa;
+      $("#applicationTotal").textContent = totals.applications;
+
+      const categories = [
+        ["Workout", totals.parts.workout / 30],
+        ["Diet", totals.parts.diet / 30],
+        ["Study", totals.parts.study / 30],
+        ["Prep", totals.parts.prep / 30]
+      ];
+      $("#categoryBreakdown").innerHTML = categories.map(([label, value]) => {
+        const ratio = Math.round((value / 25) * 100);
+        const color = ratio >= 70 ? "var(--green)" : ratio >= 40 ? "var(--gold)" : "var(--coral)";
+        return `
+          <div class="breakdown-row">
+            <span>${label}</span>
+            <span class="breakdown-track"><span class="breakdown-fill" style="width:${ratio}%; background:${color};"></span></span>
+            <strong>${ratio}%</strong>
+          </div>
+        `;
+      }).join("");
+
+      $("#heatmap").innerHTML = keys.map((key, index) => {
+        const score = scores[index];
+        const color = score >= 80 ? "var(--green)" : score >= 55 ? "var(--blue)" : score >= 25 ? "var(--gold)" : "var(--surface-2)";
+        return `<button class="heat-cell" type="button" data-select-date="${key}" title="${formatDate(key, { month: "short", day: "numeric" })}: ${score}" style="background:${color};"></button>`;
+      }).join("");
+    }
+
+    function renderRoadmap() {
+      const done = state.roadmap.filter((item) => item.done).length;
+      const total = state.roadmap.length;
+      const ratio = total ? Math.round((done / total) * 100) : 0;
+      $("#roadmapProgressText").textContent = done + " / " + total;
+      $("#roadmapProgress").style.width = ratio + "%";
+      $("#roadmapProgress").style.background = ratio >= 80 ? "var(--green)" : ratio >= 40 ? "var(--blue)" : "var(--coral)";
+      $("#roadmapList").innerHTML = state.roadmap.map((item) => `
+        <div class="roadmap-item">
+          <label>
+            <input data-roadmap="${item.id}" type="checkbox" ${item.done ? "checked" : ""}>
+            <span>${escapeHtml(item.title)}</span>
+          </label>
+          <p>${escapeHtml(item.detail)}</p>
+        </div>
+      `).join("");
+    }
+
+    function renderDsaTopics() {
+      const topics = [...state.dsaTopics].sort((a, b) => dsaStatusFlow.indexOf(a.status) - dsaStatusFlow.indexOf(b.status));
+      if (!topics.length) {
+        $("#dsaList").innerHTML = `<div class="empty-state">Add DSA, system design, CS fundamentals, or behavioral topics you want to make interview-ready.</div>`;
+        return;
+      }
+
+      $("#dsaList").innerHTML = topics.map((item) => `
+        <div class="dsa-item">
+          <div class="interview-main">
+            <strong>${escapeHtml(item.topic)}</strong>
+            <span>${escapeHtml(item.category)} - ${numberValue(item.problems)} solved</span>
+          </div>
+          <div><span class="badge">${escapeHtml(item.status)}</span></div>
+          <p>${item.status === "Interview-ready" ? "Ready for timed practice." : "Next: " + escapeHtml(nextDsaStatus(item.status))}</p>
+          <div class="actions">
+            <button class="icon-btn" type="button" data-edit-dsa="${item.id}" title="Edit topic" aria-label="Edit topic">
+              <svg aria-hidden="true"><use href="#icon-edit"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" data-advance-dsa="${item.id}" title="Advance topic" aria-label="Advance topic" ${item.status === "Interview-ready" ? "disabled" : ""}>
+              <svg aria-hidden="true"><use href="#icon-forward"></use></svg>
+            </button>
+            <button class="icon-btn" type="button" data-delete-dsa="${item.id}" title="Delete topic" aria-label="Delete topic">
+              <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderPwaStatus() {
+      const status = $("#pwaStatus");
+      if (!status) return;
+      if (location.protocol === "file:") {
+        status.textContent = "Install and offline support turn on after hosting this folder with GitHub Pages or another HTTPS host.";
+      } else if ("serviceWorker" in navigator) {
+        status.textContent = "Install/offline support is enabled for this hosted dashboard.";
+      } else {
+        status.textContent = "Your browser can use the dashboard, but does not support service workers.";
+      }
+    }
+
+    function nextDsaStatus(status) {
+      const index = dsaStatusFlow.indexOf(status);
+      return dsaStatusFlow[Math.min(index + 1, dsaStatusFlow.length - 1)] || "Learning";
+    }
+
     function getNextInterview() {
       return state.interviews
         .filter((item) => item.nextDate && !["Offer", "Rejected"].includes(item.stage) && item.nextDate >= todayKey())
@@ -1680,6 +2226,136 @@
       state.goals[key] = input.value === "" ? 0 : numberValue(input.value);
       saveState();
       render();
+    }
+
+    function updateSettingFromInput(input) {
+      const key = input.dataset.setting;
+      state.settings[key] = input.value;
+      saveState();
+      render();
+    }
+
+    function toggleRoadmap(id, checked) {
+      state.roadmap = state.roadmap.map((item) => item.id === id ? { ...item, done: checked } : item);
+      saveState();
+      render();
+    }
+
+    function handleDsaSubmit(event) {
+      event.preventDefault();
+      const id = $("#editingDsaId").value;
+      const item = {
+        id: id || crypto.randomUUID(),
+        topic: $("#dsaTopicInput").value.trim(),
+        category: $("#dsaCategoryInput").value,
+        status: $("#dsaStatusInput").value,
+        problems: numberValue($("#dsaProblemsInput").value)
+      };
+      if (!item.topic) return;
+
+      if (id) {
+        state.dsaTopics = state.dsaTopics.map((current) => current.id === id ? item : current);
+      } else {
+        state.dsaTopics.push(item);
+      }
+
+      event.target.reset();
+      $("#editingDsaId").value = "";
+      $("#saveDsaBtn").innerHTML = '<svg aria-hidden="true"><use href="#icon-plus"></use></svg>Add';
+      saveState();
+      render();
+    }
+
+    function editDsaTopic(id) {
+      const item = state.dsaTopics.find((current) => current.id === id);
+      if (!item) return;
+      $("#editingDsaId").value = item.id;
+      $("#dsaTopicInput").value = item.topic;
+      $("#dsaCategoryInput").value = item.category;
+      $("#dsaStatusInput").value = item.status;
+      $("#dsaProblemsInput").value = item.problems;
+      $("#saveDsaBtn").innerHTML = '<svg aria-hidden="true"><use href="#icon-edit"></use></svg>Update';
+      $("#dsaTopicInput").focus();
+    }
+
+    function advanceDsaTopic(id) {
+      const item = state.dsaTopics.find((current) => current.id === id);
+      if (!item) return;
+      item.status = nextDsaStatus(item.status);
+      saveState();
+      render();
+    }
+
+    function deleteDsaTopic(id) {
+      const item = state.dsaTopics.find((current) => current.id === id);
+      if (!item) return;
+      if (!confirm("Delete " + item.topic + " from the DSA tracker?")) return;
+      state.dsaTopics = state.dsaTopics.filter((current) => current.id !== id);
+      saveState();
+      render();
+    }
+
+    function toggleTheme() {
+      state.settings.theme = state.settings.theme === "dark" ? "light" : "dark";
+      saveState();
+      render();
+    }
+
+    function calendarTimestamp(dateKeyValue, timeValue) {
+      return dateKeyValue.replaceAll("-", "") + "T" + (timeValue || "09:00").replace(":", "") + "00";
+    }
+
+    function buildCalendarFile() {
+      const start = todayKey();
+      const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const events = [
+        ["Workout", "Match fitness: movement, strength, or recovery.", state.settings.workoutTime],
+        ["Study block", "FAANG fundamentals: DSA, CS, or system design.", state.settings.studyTime],
+        ["Interview prep", "Applications, mock practice, behavioral stories, or follow-up.", state.settings.prepTime]
+      ];
+      const lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//FAANG Consistency Dashboard//EN",
+        "CALSCALE:GREGORIAN"
+      ];
+      events.forEach(([summary, description, time], index) => {
+        const dtStart = calendarTimestamp(start, time);
+        lines.push(
+          "BEGIN:VEVENT",
+          "UID:faang-dashboard-" + index + "-" + start + "@local",
+          "DTSTAMP:" + stamp,
+          "DTSTART;TZID=Asia/Kolkata:" + dtStart,
+          "DURATION:PT45M",
+          "RRULE:FREQ=DAILY;COUNT=90",
+          "SUMMARY:" + summary,
+          "DESCRIPTION:" + description,
+          "END:VEVENT"
+        );
+      });
+      lines.push("END:VCALENDAR");
+      return lines.join("\r\n");
+    }
+
+    function downloadCalendar() {
+      const blob = new Blob([buildCalendarFile()], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "faang-consistency-reminders.ics";
+      anchor.click();
+      URL.revokeObjectURL(url);
+    }
+
+    let deferredInstallPrompt = null;
+
+    function installApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt = null;
+        return;
+      }
+      alert("Install becomes available after opening the hosted dashboard from GitHub Pages or another HTTPS URL.");
     }
 
     function handlePipelineSubmit(event) {
@@ -1769,11 +2445,7 @@
           const parsed = JSON.parse(reader.result);
           const imported = parsed.data || parsed;
           if (!imported.entries || !imported.goals) throw new Error("Invalid backup");
-          state = {
-            goals: { ...defaults.goals, ...imported.goals },
-            entries: imported.entries || {},
-            interviews: Array.isArray(imported.interviews) ? imported.interviews : []
-          };
+          state = normalizeState(imported);
           saveState();
           render();
         } catch {
@@ -1786,6 +2458,8 @@
     document.addEventListener("input", (event) => {
       if (event.target.matches("[data-entry]")) updateEntryFromInput(event.target);
       if (event.target.matches("[data-goal]")) updateGoalFromInput(event.target);
+      if (event.target.matches("[data-setting]")) updateSettingFromInput(event.target);
+      if (event.target.matches("[data-roadmap]")) toggleRoadmap(event.target.dataset.roadmap, event.target.checked);
     });
 
     document.addEventListener("change", (event) => {
@@ -1804,6 +2478,9 @@
       const editButton = event.target.closest("[data-edit]");
       const advanceButton = event.target.closest("[data-advance]");
       const deleteButton = event.target.closest("[data-delete]");
+      const editDsaButton = event.target.closest("[data-edit-dsa]");
+      const advanceDsaButton = event.target.closest("[data-advance-dsa]");
+      const deleteDsaButton = event.target.closest("[data-delete-dsa]");
       if (dateButton) {
         selectedDate = dateButton.dataset.selectDate;
         render();
@@ -1811,14 +2488,25 @@
       if (editButton) editInterview(editButton.dataset.edit);
       if (advanceButton) advanceInterview(advanceButton.dataset.advance);
       if (deleteButton) deleteInterview(deleteButton.dataset.delete);
+      if (editDsaButton) editDsaTopic(editDsaButton.dataset.editDsa);
+      if (advanceDsaButton) advanceDsaTopic(advanceDsaButton.dataset.advanceDsa);
+      if (deleteDsaButton) deleteDsaTopic(deleteDsaButton.dataset.deleteDsa);
+    });
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
     });
 
     $("#todayBtn").addEventListener("click", () => {
       selectedDate = todayKey();
       render();
     });
+    $("#themeBtn").addEventListener("click", toggleTheme);
+    $("#installBtn").addEventListener("click", installApp);
     $("#exportBtn").addEventListener("click", exportData);
     $("#importBtn").addEventListener("click", () => $("#importFile").click());
+    $("#downloadCalendarBtn").addEventListener("click", downloadCalendar);
     $("#clearBtn").addEventListener("click", () => {
       if (!confirm("Clear all locally saved dashboard data?")) return;
       state = structuredClone(defaults);
@@ -1827,6 +2515,11 @@
       render();
     });
     $("#pipelineForm").addEventListener("submit", handlePipelineSubmit);
+    $("#dsaForm").addEventListener("submit", handleDsaSubmit);
+
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+    }
 
     render();
     saveState();

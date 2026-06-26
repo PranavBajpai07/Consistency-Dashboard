@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">FAANG Consistency Dashboard Icon</title>
+  <desc id="desc">A line chart and target mark for daily preparation.</desc>
+  <rect width="512" height="512" rx="96" fill="#2f7d5d"/>
+  <rect x="88" y="112" width="336" height="288" rx="36" fill="#f4f7f5"/>
+  <path d="M132 332h248" fill="none" stroke="#1d2522" stroke-width="24" stroke-linecap="round"/>
+  <path d="M148 294l72-70 62 48 92-116" fill="none" stroke="#2f7d5d" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="374" cy="156" r="28" fill="#d96a4a"/>
+  <path d="M128 384l54-54 36 36 74-86 42 42 54-66" fill="none" stroke="#2a6f97" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+</svg>
