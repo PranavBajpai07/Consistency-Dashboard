@@ -1,0 +1,1835 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAANG Consistency Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7f5;
+      --surface: #ffffff;
+      --surface-2: #eef3ef;
+      --ink: #1d2522;
+      --muted: #62716b;
+      --line: #d8e0da;
+      --line-strong: #b6c4bd;
+      --green: #2f7d5d;
+      --green-soft: #dcefe6;
+      --coral: #d96a4a;
+      --coral-soft: #f8dfd6;
+      --blue: #2a6f97;
+      --blue-soft: #dcecf4;
+      --gold: #a87912;
+      --gold-soft: #f4e7c7;
+      --red: #b54848;
+      --shadow: 0 16px 40px rgba(27, 37, 34, 0.08);
+      --radius: 8px;
+      --max: 1440px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(238, 243, 239, 0.9), rgba(244, 247, 245, 1) 280px),
+        var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .icon-sprite {
+      display: none;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--surface);
+      flex: 0 0 auto;
+    }
+
+    .brand-mark svg {
+      width: 27px;
+      height: 27px;
+      color: var(--green);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 1.15rem;
+      line-height: 1.2;
+      font-weight: 780;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .date-control {
+      height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 0 10px;
+      min-width: 150px;
+    }
+
+    .btn {
+      min-height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      font-weight: 720;
+      white-space: nowrap;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .btn:hover,
+    .icon-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--ink);
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .btn.danger {
+      color: var(--red);
+      border-color: #d7b6b6;
+      background: #fffafa;
+    }
+
+    .btn svg,
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      flex: 0 0 auto;
+    }
+
+    .main {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 44px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 1.1fr) minmax(280px, 1.8fr);
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 16px;
+    }
+
+    .brand-divider {
+      color: var(--line-strong);
+      margin: 0 6px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .score-panel {
+      min-height: 300px;
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .score-ring {
+      width: 160px;
+      height: 160px;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .score-ring svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+      display: block;
+    }
+
+    .score-ring .track {
+      fill: none;
+      stroke: var(--surface-2);
+      stroke-width: 12;
+    }
+
+    .score-ring .progress {
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 12;
+      stroke-linecap: round;
+      stroke-dasharray: 326.73;
+      stroke-dashoffset: 326.73;
+      transition: stroke-dashoffset 220ms ease, stroke 220ms ease;
+    }
+
+    .score-ring-label {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .score-ring-label strong {
+      display: block;
+      font-size: 2.25rem;
+      line-height: 1;
+      font-weight: 820;
+    }
+
+    .score-ring-label span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 5px;
+      font-weight: 720;
+    }
+
+    .score-copy {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 820;
+      text-transform: uppercase;
+    }
+
+    .score-copy h2 {
+      margin-top: 8px;
+      font-size: 2rem;
+      line-height: 1.08;
+      max-width: 620px;
+    }
+
+    .message {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 640px;
+    }
+
+    .stat-row {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: var(--surface-2);
+      min-width: 0;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 720;
+      margin-bottom: 4px;
+    }
+
+    .stat strong {
+      font-size: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .trend-panel {
+      padding: 20px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+    }
+
+    .profile-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .profile-token {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--surface-2);
+      color: var(--green);
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .profile-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .profile-token span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 780;
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+
+    .profile-token strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.98rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2,
+    .section-head h3 {
+      font-size: 1rem;
+      line-height: 1.25;
+      font-weight: 820;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .weekly-bars {
+      min-height: 220px;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(36px, 1fr));
+      align-items: end;
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .day-bar {
+      min-height: 190px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 8px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .bar-track {
+      min-height: 160px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      display: flex;
+      align-items: end;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 100%;
+      min-height: 4px;
+      background: var(--green);
+      transition: height 180ms ease, background 180ms ease;
+    }
+
+    .day-bar strong {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .day-bar span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .tracker-card {
+      padding: 18px;
+      min-height: 365px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title h3 {
+      font-size: 1.02rem;
+      line-height: 1.2;
+      font-weight: 820;
+    }
+
+    .card-title p {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .domain-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .domain-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .domain-workout {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .domain-diet {
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+
+    .domain-study {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .domain-prep {
+      background: var(--gold-soft);
+      color: var(--gold);
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 760;
+      line-height: 1.3;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      min-height: 42px;
+      padding: 9px 10px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(47, 125, 93, 0.15);
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-height: 20px;
+      accent-color: var(--green);
+      flex: 0 0 auto;
+      padding: 0;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      color: var(--ink);
+      background: var(--surface-2);
+      font-size: 0.9rem;
+      font-weight: 720;
+    }
+
+    .progress-line {
+      display: grid;
+      gap: 7px;
+    }
+
+    .progress-line-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 760;
+    }
+
+    .line-track {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    .line-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--green);
+      transition: width 180ms ease, background 180ms ease;
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.95fr) minmax(360px, 1.6fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .target-panel,
+    .reflection-panel,
+    .pipeline-panel {
+      padding: 18px;
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .reflection-notes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pipeline-metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .stage-pill {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      min-width: 0;
+      background: var(--surface-2);
+    }
+
+    .stage-pill span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 760;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stage-pill strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .pipeline-form {
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr 0.8fr 0.85fr 1.3fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .pipeline-form .btn {
+      min-width: 112px;
+    }
+
+    .interview-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .interview-item {
+      display: grid;
+      grid-template-columns: minmax(160px, 1.5fr) minmax(120px, 0.8fr) minmax(118px, 0.8fr) auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: var(--surface);
+    }
+
+    .interview-item.overdue {
+      border-color: #d8ada1;
+      background: #fff8f5;
+    }
+
+    .interview-main {
+      min-width: 0;
+    }
+
+    .interview-main strong {
+      display: block;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .interview-main span,
+    .interview-meta span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-top: 4px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      max-width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--line-strong);
+      padding: 5px 9px;
+      font-size: 0.82rem;
+      font-weight: 820;
+      background: var(--surface-2);
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      display: inline-grid;
+      place-items: center;
+      background: var(--surface);
+      color: var(--ink);
+      padding: 0;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    .empty-state {
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      padding: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+      background: var(--surface-2);
+    }
+
+    .hidden-file {
+      display: none;
+    }
+
+    .save-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .lower-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: repeat(2, minmax(230px, 1fr));
+      }
+
+      .profile-strip {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+      }
+
+      .pipeline-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pipeline-form .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        position: static;
+      }
+
+      .topbar-inner,
+      .main {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .toolbar,
+      .toolbar .btn,
+      .date-control {
+        width: 100%;
+      }
+
+      .toolbar .btn {
+        justify-content: center;
+      }
+
+      .score-panel {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .score-copy h2 {
+        font-size: 1.55rem;
+      }
+
+      .stat-row,
+      .dashboard-grid,
+      .profile-strip,
+      .target-grid,
+      .reflection-grid,
+      .reflection-notes,
+      .field-grid,
+      .pipeline-form,
+      .interview-item {
+        grid-template-columns: 1fr;
+      }
+
+      .tracker-card {
+        min-height: auto;
+      }
+
+      .pipeline-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .weekly-bars {
+        gap: 6px;
+      }
+
+      .day-bar strong {
+        font-size: 0.74rem;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 17.5 9 12l3 3.5L20 6"></path>
+      <path d="M4 5v14h16"></path>
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3v12"></path>
+      <path d="m7 10 5 5 5-5"></path>
+      <path d="M5 21h14"></path>
+    </symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 21V9"></path>
+      <path d="m7 14 5-5 5 5"></path>
+      <path d="M5 3h14"></path>
+    </symbol>
+    <symbol id="icon-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+      <path d="M3 4v6h6"></path>
+    </symbol>
+    <symbol id="icon-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 7v10"></path>
+      <path d="M18 7v10"></path>
+      <path d="M3 9v6"></path>
+      <path d="M21 9v6"></path>
+      <path d="M6 12h12"></path>
+    </symbol>
+    <symbol id="icon-plate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="7"></circle>
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M20 4v16"></path>
+    </symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 0-4-4z"></path>
+      <path d="M5 4v12"></path>
+    </symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1"></path>
+      <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+      <path d="M4 12h16"></path>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"></path>
+      <path d="M5 12h14"></path>
+    </symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"></path>
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
+    </symbol>
+    <symbol id="icon-forward" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14"></path>
+      <path d="m13 6 6 6-6 6"></path>
+    </symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"></path>
+      <path d="M8 6V4h8v2"></path>
+      <path d="M19 6 18 20H6L5 6"></path>
+    </symbol>
+    <symbol id="icon-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 21s7-5.3 7-11a7 7 0 0 0-14 0c0 5.7 7 11 7 11z"></path>
+      <circle cx="12" cy="10" r="2.5"></circle>
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m4 11 8-7 8 7"></path>
+      <path d="M6 10v10h12V10"></path>
+      <path d="M10 20v-5h4v5"></path>
+    </symbol>
+    <symbol id="icon-football" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"></circle>
+      <path d="m12 7 4 3-1.5 5h-5L8 10z"></path>
+      <path d="M12 7V3"></path>
+      <path d="m16 10 4-1"></path>
+      <path d="m14.5 15 2.5 4"></path>
+      <path d="m9.5 15-2.5 4"></path>
+      <path d="M8 10 4 9"></path>
+    </symbol>
+    <symbol id="icon-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8"></circle>
+      <circle cx="12" cy="12" r="4"></circle>
+      <circle cx="12" cy="12" r="1"></circle>
+      <path d="M18 6 21 3"></path>
+    </symbol>
+  </svg>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg><use href="#icon-logo"></use></svg>
+          </div>
+          <div>
+            <h1>FAANG Consistency Dashboard</h1>
+            <p><span id="dateLabel">Daily progress tracker</span><span class="brand-divider">|</span><span>28-year-old Indian man | Maharashtra | Lucknow</span></p>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input id="datePicker" class="date-control" type="date" aria-label="Selected day">
+          <button id="todayBtn" class="btn" type="button" title="Jump to today">Today</button>
+          <button id="exportBtn" class="btn" type="button" title="Download backup">
+            <svg aria-hidden="true"><use href="#icon-download"></use></svg>
+            Export
+          </button>
+          <button id="importBtn" class="btn" type="button" title="Import backup">
+            <svg aria-hidden="true"><use href="#icon-upload"></use></svg>
+            Import
+          </button>
+          <button id="clearBtn" class="btn danger" type="button" title="Clear all local dashboard data">
+            <svg aria-hidden="true"><use href="#icon-reset"></use></svg>
+            Clear
+          </button>
+          <input id="importFile" class="hidden-file" type="file" accept="application/json">
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="hero-grid" aria-label="Daily status">
+        <article class="panel score-panel">
+          <div class="score-ring" aria-label="Daily consistency score">
+            <svg viewBox="0 0 120 120">
+              <circle class="track" cx="60" cy="60" r="52"></circle>
+              <circle id="scoreProgress" class="progress" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="score-ring-label">
+              <div>
+                <strong id="scoreValue">0</strong>
+                <span>score</span>
+              </div>
+            </div>
+          </div>
+          <div class="score-copy">
+            <p class="eyebrow" id="dayEyebrow">Today</p>
+            <h2 id="momentumHeadline">Lucknow roots. Maharashtra grind. FAANG finish line.</h2>
+            <p id="momentumMessage" class="message">Train the day like a football match: win the next touch, protect your energy, and keep moving toward the FAANG loop.</p>
+            <div class="stat-row" aria-label="Progress summary">
+              <div class="stat">
+                <span>Current streak</span>
+                <strong id="streakValue">0 days</strong>
+              </div>
+              <div class="stat">
+                <span>Weekly average</span>
+                <strong id="weekAverage">0%</strong>
+              </div>
+              <div class="stat">
+                <span>Active interviews</span>
+                <strong id="activeInterviews">0</strong>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel trend-panel">
+          <div class="section-head">
+            <div>
+              <h2>Last 7 Days</h2>
+              <p id="weeklySummary">Momentum starts with one completed day.</p>
+            </div>
+            <span class="save-note" id="saveNote">Saved locally</span>
+          </div>
+          <div id="weeklyBars" class="weekly-bars" aria-label="Seven day score chart"></div>
+        </article>
+      </section>
+
+      <section class="profile-strip" aria-label="Personal mission">
+        <article class="profile-token">
+          <div class="profile-icon" aria-hidden="true"><svg><use href="#icon-map"></use></svg></div>
+          <div>
+            <span>Current base</span>
+            <strong>Maharashtra, India</strong>
+          </div>
+        </article>
+        <article class="profile-token">
+          <div class="profile-icon" aria-hidden="true"><svg><use href="#icon-home"></use></svg></div>
+          <div>
+            <span>Roots</span>
+            <strong>Lucknow, Uttar Pradesh</strong>
+          </div>
+        </article>
+        <article class="profile-token">
+          <div class="profile-icon" aria-hidden="true"><svg><use href="#icon-football"></use></svg></div>
+          <div>
+            <span>Mindset</span>
+            <strong>Football discipline</strong>
+          </div>
+        </article>
+        <article class="profile-token">
+          <div class="profile-icon" aria-hidden="true"><svg><use href="#icon-target"></use></svg></div>
+          <div>
+            <span>Mission</span>
+            <strong>FAANG-ready engineer</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid" aria-label="Daily trackers">
+        <article class="panel tracker-card">
+          <div class="card-title">
+            <div>
+              <h3>Workout</h3>
+              <p id="workoutSub">Match fitness for the mind and body.</p>
+            </div>
+            <div class="domain-icon domain-workout" aria-hidden="true">
+              <svg><use href="#icon-dumbbell"></use></svg>
+            </div>
+          </div>
+          <div class="progress-line">
+            <div class="progress-line-top">
+              <span>Minutes</span>
+              <strong id="workoutProgressText">0 / 45</strong>
+            </div>
+            <div class="line-track"><div id="workoutProgress" class="line-fill"></div></div>
+          </div>
+          <div class="field-stack">
+            <label class="check-row"><input data-entry="workoutDone" type="checkbox"> Workout complete</label>
+            <div class="field-grid">
+              <label>Minutes <input data-entry="workoutMinutes" type="number" min="0" step="5"></label>
+              <label>Type
+                <select data-entry="workoutType">
+                  <option>Strength</option>
+                  <option>Cardio</option>
+                  <option>Mobility</option>
+                  <option>Sport</option>
+                  <option>Recovery</option>
+                </select>
+              </label>
+            </div>
+            <label>Intensity
+              <select data-entry="workoutIntensity">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </label>
+          </div>
+        </article>
+
+        <article class="panel tracker-card">
+          <div class="card-title">
+            <div>
+              <h3>Diet</h3>
+              <p id="dietSub">Fuel the Maharashtra workday.</p>
+            </div>
+            <div class="domain-icon domain-diet" aria-hidden="true">
+              <svg><use href="#icon-plate"></use></svg>
+            </div>
+          </div>
+          <div class="progress-line">
+            <div class="progress-line-top">
+              <span>Protein</span>
+              <strong id="dietProgressText">0 / 100g</strong>
+            </div>
+            <div class="line-track"><div id="dietProgress" class="line-fill"></div></div>
+          </div>
+          <div class="field-stack">
+            <label class="check-row"><input data-entry="cleanMeals" type="checkbox"> Clean meals day</label>
+            <div class="field-grid">
+              <label>Protein g <input data-entry="protein" type="number" min="0" step="5"></label>
+              <label>Water L <input data-entry="water" type="number" min="0" step="0.25"></label>
+            </div>
+            <label>Calories <input data-entry="calories" type="number" min="0" step="50" placeholder="Optional"></label>
+          </div>
+        </article>
+
+        <article class="panel tracker-card">
+          <div class="card-title">
+            <div>
+              <h3>Study</h3>
+              <p id="studySub">FAANG fundamentals, one block at a time.</p>
+            </div>
+            <div class="domain-icon domain-study" aria-hidden="true">
+              <svg><use href="#icon-book"></use></svg>
+            </div>
+          </div>
+          <div class="progress-line">
+            <div class="progress-line-top">
+              <span>Focused minutes</span>
+              <strong id="studyProgressText">0 / 120</strong>
+            </div>
+            <div class="line-track"><div id="studyProgress" class="line-fill"></div></div>
+          </div>
+          <div class="field-stack">
+            <label class="check-row"><input data-entry="studyDone" type="checkbox"> Main study block done</label>
+            <label>Minutes <input data-entry="studyMinutes" type="number" min="0" step="10"></label>
+            <label>Topic <input data-entry="studyTopic" type="text" placeholder="DSA, system design, CS basics"></label>
+          </div>
+        </article>
+
+        <article class="panel tracker-card">
+          <div class="card-title">
+            <div>
+              <h3>Interview Prep</h3>
+              <p id="prepSub">Practice for the FAANG interview loop.</p>
+            </div>
+            <div class="domain-icon domain-prep" aria-hidden="true">
+              <svg><use href="#icon-briefcase"></use></svg>
+            </div>
+          </div>
+          <div class="progress-line">
+            <div class="progress-line-top">
+              <span>Prep minutes</span>
+              <strong id="prepProgressText">0 / 60</strong>
+            </div>
+            <div class="line-track"><div id="prepProgress" class="line-fill"></div></div>
+          </div>
+          <div class="field-stack">
+            <div class="field-grid">
+              <label>Prep min <input data-entry="prepMinutes" type="number" min="0" step="10"></label>
+              <label>DSA solved <input data-entry="dsaProblems" type="number" min="0" step="1"></label>
+            </div>
+            <div class="field-grid">
+              <label>Applications <input data-entry="applications" type="number" min="0" step="1"></label>
+              <label>Networking <input data-entry="networking" type="number" min="0" step="1"></label>
+            </div>
+            <label class="check-row"><input data-entry="mockDone" type="checkbox"> Mock or voice practice</label>
+            <label class="check-row"><input data-entry="behaviorPractice" type="checkbox"> Behavioral stories practiced</label>
+          </div>
+        </article>
+      </section>
+
+      <section class="lower-grid" aria-label="Targets and interview pipeline">
+        <div class="stack">
+          <article class="panel target-panel">
+            <div class="section-head">
+              <div>
+                <h2>Daily Targets</h2>
+                <p>Your match plan for FAANG consistency.</p>
+              </div>
+            </div>
+            <div class="target-grid">
+              <label>Workout min <input data-goal="workoutMinutes" type="number" min="0" step="5"></label>
+              <label>Study min <input data-goal="studyMinutes" type="number" min="0" step="10"></label>
+              <label>Prep min <input data-goal="prepMinutes" type="number" min="0" step="10"></label>
+              <label>Protein g <input data-goal="protein" type="number" min="0" step="5"></label>
+              <label>Water L <input data-goal="water" type="number" min="0" step="0.25"></label>
+              <label>Streak score <input data-goal="streakScore" type="number" min="1" max="100" step="1"></label>
+            </div>
+          </article>
+
+          <article class="panel reflection-panel">
+            <div class="section-head">
+              <div>
+              <h2>Daily Reflection</h2>
+              <p>Review the day like match tape.</p>
+              </div>
+            </div>
+            <div class="reflection-grid">
+              <label>Sleep h <input data-entry="sleep" type="number" min="0" max="14" step="0.5"></label>
+              <label>Energy
+                <select data-entry="energy">
+                  <option value="1">1 - Low</option>
+                  <option value="2">2</option>
+                  <option value="3">3 - Steady</option>
+                  <option value="4">4</option>
+                  <option value="5">5 - Sharp</option>
+                </select>
+              </label>
+              <label>Mood
+                <select data-entry="mood">
+                  <option>Calm</option>
+                  <option>Steady</option>
+                  <option>Driven</option>
+                  <option>Tired</option>
+                  <option>Stressed</option>
+                </select>
+              </label>
+            </div>
+            <div class="reflection-notes">
+              <label>Win <textarea data-entry="win" placeholder="One rep that moved you closer to FAANG"></textarea></label>
+              <label>Tomorrow <textarea data-entry="tomorrow" placeholder="Next useful action before the final whistle"></textarea></label>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel pipeline-panel">
+          <div class="section-head">
+            <div>
+              <h2>FAANG Interview Pipeline</h2>
+              <p id="pipelineSummary">No active FAANG loops yet.</p>
+            </div>
+          </div>
+
+          <div id="pipelineMetrics" class="pipeline-metrics" aria-label="Interview stage counts"></div>
+
+          <form id="pipelineForm" class="pipeline-form">
+            <input id="editingId" type="hidden">
+            <label>Company <input id="companyInput" type="text" required placeholder="Google, Amazon, Meta"></label>
+            <label>Role <input id="roleInput" type="text" required placeholder="Role"></label>
+            <label>Stage
+              <select id="stageInput">
+                <option>Applied</option>
+                <option>Recruiter</option>
+                <option>Technical</option>
+                <option>Final</option>
+                <option>Offer</option>
+                <option>Rejected</option>
+              </select>
+            </label>
+            <label>Next date <input id="nextDateInput" type="date"></label>
+            <label>Focus <input id="focusInput" type="text" placeholder="Prep focus or follow-up"></label>
+            <button id="saveInterviewBtn" class="btn primary" type="submit">
+              <svg aria-hidden="true"><use href="#icon-plus"></use></svg>
+              Add
+            </button>
+          </form>
+
+          <div id="interviewList" class="interview-list"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "consistency-dashboard-v1";
+    const stages = ["Applied", "Recruiter", "Technical", "Final", "Offer", "Rejected"];
+    const ringCircumference = 326.73;
+
+    const defaults = {
+      goals: {
+        workoutMinutes: 45,
+        studyMinutes: 120,
+        prepMinutes: 60,
+        protein: 100,
+        water: 3,
+        streakScore: 70
+      },
+      entries: {},
+      interviews: []
+    };
+
+    let state = loadState();
+    let selectedDate = todayKey();
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+    function todayKey() {
+      const now = new Date();
+      const shifted = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+      return shifted.toISOString().slice(0, 10);
+    }
+
+    function parseDate(key) {
+      return new Date(key + "T00:00:00");
+    }
+
+    function dateKey(date) {
+      const shifted = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return shifted.toISOString().slice(0, 10);
+    }
+
+    function addDays(key, days) {
+      const date = parseDate(key);
+      date.setDate(date.getDate() + days);
+      return dateKey(date);
+    }
+
+    function formatDate(key, options) {
+      return parseDate(key).toLocaleDateString(undefined, options);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function numberValue(value) {
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function percent(value, target) {
+      const safeTarget = Math.max(numberValue(target), 1);
+      return clamp(numberValue(value) / safeTarget, 0, 1);
+    }
+
+    function createEntry() {
+      return {
+        workoutDone: false,
+        workoutMinutes: 0,
+        workoutType: "Strength",
+        workoutIntensity: "Medium",
+        cleanMeals: false,
+        protein: 0,
+        water: 0,
+        calories: "",
+        studyDone: false,
+        studyMinutes: 0,
+        studyTopic: "",
+        prepMinutes: 0,
+        dsaProblems: 0,
+        applications: 0,
+        networking: 0,
+        mockDone: false,
+        behaviorPractice: false,
+        sleep: 7,
+        energy: "3",
+        mood: "Steady",
+        win: "",
+        tomorrow: ""
+      };
+    }
+
+    function getEntry(key = selectedDate) {
+      if (!state.entries[key]) {
+        state.entries[key] = createEntry();
+      }
+      return state.entries[key];
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaults);
+        const parsed = JSON.parse(raw);
+        return {
+          goals: { ...defaults.goals, ...(parsed.goals || {}) },
+          entries: parsed.entries || {},
+          interviews: Array.isArray(parsed.interviews) ? parsed.interviews : []
+        };
+      } catch {
+        return structuredClone(defaults);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      $("#saveNote").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function scoreEntry(entry) {
+      const goals = state.goals;
+      const workout = Math.min(25, percent(entry.workoutMinutes, goals.workoutMinutes) * 20 + (entry.workoutDone ? 5 : 0));
+      const diet = Math.min(25, percent(entry.protein, goals.protein) * 12 + percent(entry.water, goals.water) * 8 + (entry.cleanMeals ? 5 : 0));
+      const study = Math.min(25, percent(entry.studyMinutes, goals.studyMinutes) * 20 + (entry.studyDone ? 5 : 0));
+      const prep = Math.min(25,
+        percent(entry.prepMinutes, goals.prepMinutes) * 12 +
+        percent(entry.dsaProblems, 3) * 5 +
+        (entry.mockDone ? 4 : 0) +
+        (entry.behaviorPractice ? 2 : 0) +
+        percent(entry.applications, 2) * 1 +
+        percent(entry.networking, 2) * 1
+      );
+      return Math.round(workout + diet + study + prep);
+    }
+
+    function streakEndingAt(key) {
+      let streak = 0;
+      let cursor = key;
+      const threshold = numberValue(state.goals.streakScore) || 70;
+      for (let i = 0; i < 365; i += 1) {
+        const entry = state.entries[cursor];
+        if (!entry || scoreEntry(entry) < threshold) break;
+        streak += 1;
+        cursor = addDays(cursor, -1);
+      }
+      return streak;
+    }
+
+    function weekKeys() {
+      return Array.from({ length: 7 }, (_, index) => addDays(selectedDate, index - 6));
+    }
+
+    function getScoreTone(score) {
+      if (score >= 85) {
+        return {
+          color: "var(--green)",
+          headline: "FAANG-standard day. Full 90-minute energy.",
+          message: "Workout, fuel, study, and prep all showed up. Keep the next day simple and repeatable."
+        };
+      }
+      if (score >= 70) {
+        return {
+          color: "var(--blue)",
+          headline: "You protected the streak today.",
+          message: "Enough work landed to keep the FAANG path alive. A clean finish beats a heroic sprint."
+        };
+      }
+      if (score >= 40) {
+        return {
+          color: "var(--gold)",
+          headline: "Partial progress still moves the ball.",
+          message: "Close one more loop if you can: ten minutes of review, movement, or interview follow-up."
+        };
+      }
+      return {
+        color: "var(--coral)",
+        headline: "One clean touch. One next rep.",
+        message: "Pick the smallest useful action and record it. Lucknow discipline, Maharashtra consistency, FAANG direction."
+      };
+    }
+
+    function setInputValue(input, value) {
+      if (input.type === "checkbox") {
+        input.checked = Boolean(value);
+      } else {
+        input.value = value ?? "";
+      }
+    }
+
+    function render() {
+      const entry = getEntry();
+      const score = scoreEntry(entry);
+      const tone = getScoreTone(score);
+      const dashOffset = ringCircumference - ringCircumference * (score / 100);
+      const keys = weekKeys();
+      const scores = keys.map((key) => scoreEntry(state.entries[key] || createEntry()));
+      const average = Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length);
+      const activeCount = state.interviews.filter((item) => !["Offer", "Rejected"].includes(item.stage)).length;
+      const nextInterview = getNextInterview();
+
+      $("#datePicker").value = selectedDate;
+      $("#dateLabel").textContent = formatDate(selectedDate, { weekday: "long", month: "short", day: "numeric", year: "numeric" });
+      $("#dayEyebrow").textContent = selectedDate === todayKey() ? "Today" : formatDate(selectedDate, { weekday: "long" });
+      $("#scoreValue").textContent = score;
+      $("#scoreProgress").style.strokeDashoffset = dashOffset;
+      $("#scoreProgress").style.stroke = tone.color;
+      $("#momentumHeadline").textContent = tone.headline;
+      $("#momentumMessage").textContent = tone.message;
+      $("#streakValue").textContent = streakEndingAt(selectedDate) + " days";
+      $("#weekAverage").textContent = average + "%";
+      $("#activeInterviews").textContent = activeCount;
+      $("#weeklySummary").textContent = nextInterview
+        ? "Next: " + nextInterview.company + " on " + formatDate(nextInterview.nextDate, { month: "short", day: "numeric" })
+        : "Average score: " + average + "%";
+
+      $$("#scoreProgress, .line-fill").forEach((node) => node.style.removeProperty("--unused"));
+      $("[data-entry]");
+      $$("[data-entry]").forEach((input) => setInputValue(input, entry[input.dataset.entry]));
+      $$("[data-goal]").forEach((input) => setInputValue(input, state.goals[input.dataset.goal]));
+
+      renderProgressLines(entry);
+      renderWeeklyBars(keys, scores);
+      renderPipeline();
+    }
+
+    function renderProgressLines(entry) {
+      const goals = state.goals;
+      const progress = [
+        ["workout", percent(entry.workoutMinutes, goals.workoutMinutes), entry.workoutMinutes + " / " + goals.workoutMinutes],
+        ["diet", percent(entry.protein, goals.protein), entry.protein + " / " + goals.protein + "g"],
+        ["study", percent(entry.studyMinutes, goals.studyMinutes), entry.studyMinutes + " / " + goals.studyMinutes],
+        ["prep", percent(entry.prepMinutes, goals.prepMinutes), entry.prepMinutes + " / " + goals.prepMinutes]
+      ];
+
+      progress.forEach(([name, ratio, text]) => {
+        const fill = $("#" + name + "Progress");
+        fill.style.width = Math.round(ratio * 100) + "%";
+        fill.style.background = ratio >= 1 ? "var(--green)" : ratio >= 0.5 ? "var(--blue)" : "var(--coral)";
+        $("#" + name + "ProgressText").textContent = text;
+      });
+
+      $("#workoutSub").textContent = entry.workoutMinutes > 0 ? entry.workoutType + " - " + entry.workoutIntensity : "Match fitness for the mind and body.";
+      $("#dietSub").textContent = entry.water > 0 ? entry.water + " L water logged" : "Fuel the Maharashtra workday.";
+      $("#studySub").textContent = entry.studyTopic ? entry.studyTopic : "FAANG fundamentals, one block at a time.";
+      $("#prepSub").textContent = entry.dsaProblems > 0 ? entry.dsaProblems + " DSA solved" : "Practice for the FAANG interview loop.";
+    }
+
+    function renderWeeklyBars(keys, scores) {
+      $("#weeklyBars").innerHTML = keys.map((key, index) => {
+        const score = scores[index];
+        const height = Math.max(score, 2);
+        const color = score >= 70 ? "var(--green)" : score >= 40 ? "var(--gold)" : "var(--coral)";
+        const selected = key === selectedDate ? "outline: 2px solid var(--ink); outline-offset: 2px;" : "";
+        return `
+          <button class="day-bar" type="button" data-select-date="${key}" title="${formatDate(key, { weekday: "long", month: "short", day: "numeric" })}: ${score}">
+            <span class="bar-track" style="${selected}"><span class="bar-fill" style="height:${height}%; background:${color};"></span></span>
+            <span><strong>${formatDate(key, { weekday: "short" })}</strong><span>${score}</span></span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderPipeline() {
+      const counts = stages.reduce((acc, stage) => {
+        acc[stage] = state.interviews.filter((item) => item.stage === stage).length;
+        return acc;
+      }, {});
+      $("#pipelineMetrics").innerHTML = stages.map((stage) => `
+        <div class="stage-pill">
+          <span>${stage}</span>
+          <strong>${counts[stage]}</strong>
+        </div>
+      `).join("");
+
+      const active = state.interviews.filter((item) => !["Offer", "Rejected"].includes(item.stage)).length;
+      const offers = counts.Offer || 0;
+      $("#pipelineSummary").textContent = active
+        ? active + " active loop" + (active === 1 ? "" : "s") + (offers ? " and " + offers + " offer" + (offers === 1 ? "" : "s") : "")
+        : offers ? offers + " offer" + (offers === 1 ? "" : "s") + " captured" : "No active FAANG loops yet.";
+
+      const sorted = [...state.interviews].sort((a, b) => {
+        const aDate = a.nextDate || "9999-12-31";
+        const bDate = b.nextDate || "9999-12-31";
+        return aDate.localeCompare(bDate);
+      });
+
+      if (!sorted.length) {
+        $("#interviewList").innerHTML = `<div class="empty-state">Add FAANG or dream-company applications and track each loop as it moves.</div>`;
+        return;
+      }
+
+      $("#interviewList").innerHTML = sorted.map((item) => {
+        const isActive = !["Offer", "Rejected"].includes(item.stage);
+        const overdue = isActive && item.nextDate && item.nextDate < todayKey();
+        const nextDate = item.nextDate ? formatDate(item.nextDate, { month: "short", day: "numeric", year: "numeric" }) : "No date";
+        return `
+          <div class="interview-item ${overdue ? "overdue" : ""}">
+            <div class="interview-main">
+              <strong>${escapeHtml(item.company)} - ${escapeHtml(item.role)}</strong>
+              <span>${escapeHtml(item.focus || "Focus not set")}</span>
+            </div>
+            <div><span class="badge">${escapeHtml(item.stage)}</span></div>
+            <div class="interview-meta">
+              <strong>${nextDate}</strong>
+              <span>${overdue ? "Follow-up due" : "Next checkpoint"}</span>
+            </div>
+            <div class="actions">
+              <button class="icon-btn" type="button" data-edit="${item.id}" title="Edit interview" aria-label="Edit interview">
+                <svg aria-hidden="true"><use href="#icon-edit"></use></svg>
+              </button>
+              <button class="icon-btn" type="button" data-advance="${item.id}" title="Advance stage" aria-label="Advance stage" ${item.stage === "Rejected" ? "disabled" : ""}>
+                <svg aria-hidden="true"><use href="#icon-forward"></use></svg>
+              </button>
+              <button class="icon-btn" type="button" data-delete="${item.id}" title="Delete interview" aria-label="Delete interview">
+                <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getNextInterview() {
+      return state.interviews
+        .filter((item) => item.nextDate && !["Offer", "Rejected"].includes(item.stage) && item.nextDate >= todayKey())
+        .sort((a, b) => a.nextDate.localeCompare(b.nextDate))[0] || null;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function updateEntryFromInput(input) {
+      const entry = getEntry();
+      const key = input.dataset.entry;
+      if (input.type === "checkbox") {
+        entry[key] = input.checked;
+      } else if (input.type === "number") {
+        entry[key] = input.value === "" ? "" : numberValue(input.value);
+      } else {
+        entry[key] = input.value;
+      }
+      saveState();
+      render();
+    }
+
+    function updateGoalFromInput(input) {
+      const key = input.dataset.goal;
+      state.goals[key] = input.value === "" ? 0 : numberValue(input.value);
+      saveState();
+      render();
+    }
+
+    function handlePipelineSubmit(event) {
+      event.preventDefault();
+      const id = $("#editingId").value;
+      const item = {
+        id: id || crypto.randomUUID(),
+        company: $("#companyInput").value.trim(),
+        role: $("#roleInput").value.trim(),
+        stage: $("#stageInput").value,
+        nextDate: $("#nextDateInput").value,
+        focus: $("#focusInput").value.trim(),
+        updatedAt: new Date().toISOString()
+      };
+
+      if (!item.company || !item.role) return;
+
+      if (id) {
+        state.interviews = state.interviews.map((current) => current.id === id ? item : current);
+      } else {
+        state.interviews.push(item);
+      }
+
+      event.target.reset();
+      $("#editingId").value = "";
+      $("#saveInterviewBtn").innerHTML = '<svg aria-hidden="true"><use href="#icon-plus"></use></svg>Add';
+      saveState();
+      render();
+    }
+
+    function editInterview(id) {
+      const item = state.interviews.find((current) => current.id === id);
+      if (!item) return;
+      $("#editingId").value = item.id;
+      $("#companyInput").value = item.company;
+      $("#roleInput").value = item.role;
+      $("#stageInput").value = item.stage;
+      $("#nextDateInput").value = item.nextDate || "";
+      $("#focusInput").value = item.focus || "";
+      $("#saveInterviewBtn").innerHTML = '<svg aria-hidden="true"><use href="#icon-edit"></use></svg>Update';
+      $("#companyInput").focus();
+    }
+
+    function advanceInterview(id) {
+      const item = state.interviews.find((current) => current.id === id);
+      if (!item) return;
+      const index = stages.indexOf(item.stage);
+      if (index >= 0 && index < stages.length - 2) {
+        item.stage = stages[index + 1];
+      } else if (item.stage === "Offer") {
+        item.stage = "Offer";
+      }
+      item.updatedAt = new Date().toISOString();
+      saveState();
+      render();
+    }
+
+    function deleteInterview(id) {
+      const item = state.interviews.find((current) => current.id === id);
+      if (!item) return;
+      if (!confirm("Delete " + item.company + " from the interview pipeline?")) return;
+      state.interviews = state.interviews.filter((current) => current.id !== id);
+      saveState();
+      render();
+    }
+
+    function exportData() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        app: "Consistency Dashboard",
+        version: 1,
+        data: state
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "consistency-dashboard-backup-" + todayKey() + ".json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const imported = parsed.data || parsed;
+          if (!imported.entries || !imported.goals) throw new Error("Invalid backup");
+          state = {
+            goals: { ...defaults.goals, ...imported.goals },
+            entries: imported.entries || {},
+            interviews: Array.isArray(imported.interviews) ? imported.interviews : []
+          };
+          saveState();
+          render();
+        } catch {
+          alert("That file does not look like a Consistency Dashboard backup.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    document.addEventListener("input", (event) => {
+      if (event.target.matches("[data-entry]")) updateEntryFromInput(event.target);
+      if (event.target.matches("[data-goal]")) updateGoalFromInput(event.target);
+    });
+
+    document.addEventListener("change", (event) => {
+      if (event.target.matches("#datePicker")) {
+        selectedDate = event.target.value || todayKey();
+        render();
+      }
+      if (event.target.matches("#importFile") && event.target.files[0]) {
+        importData(event.target.files[0]);
+        event.target.value = "";
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const dateButton = event.target.closest("[data-select-date]");
+      const editButton = event.target.closest("[data-edit]");
+      const advanceButton = event.target.closest("[data-advance]");
+      const deleteButton = event.target.closest("[data-delete]");
+      if (dateButton) {
+        selectedDate = dateButton.dataset.selectDate;
+        render();
+      }
+      if (editButton) editInterview(editButton.dataset.edit);
+      if (advanceButton) advanceInterview(advanceButton.dataset.advance);
+      if (deleteButton) deleteInterview(deleteButton.dataset.delete);
+    });
+
+    $("#todayBtn").addEventListener("click", () => {
+      selectedDate = todayKey();
+      render();
+    });
+    $("#exportBtn").addEventListener("click", exportData);
+    $("#importBtn").addEventListener("click", () => $("#importFile").click());
+    $("#clearBtn").addEventListener("click", () => {
+      if (!confirm("Clear all locally saved dashboard data?")) return;
+      state = structuredClone(defaults);
+      selectedDate = todayKey();
+      saveState();
+      render();
+    });
+    $("#pipelineForm").addEventListener("submit", handlePipelineSubmit);
+
+    render();
+    saveState();
+  </script>
+</body>
+</html>
