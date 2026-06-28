@@ -9,10 +9,15 @@ Built for a 28-year-old Indian man living in Maharashtra, rooted in Lucknow, mot
 This dashboard helps track the habits and preparation areas that matter most:
 
 - Workout consistency
+- Alternate-day running and abs
+- Push-pull-legs strength training
 - Diet, protein, water, and calories
 - Study time and topics
+- Abdul Bari algorithm playlist progress
+- William Fiset DSA playlist progress
 - Interview preparation
 - DSA practice
+- Daily LeetCode question
 - Applications and networking
 - Mock interviews and behavioral preparation
 - Interview pipeline progress
@@ -28,6 +33,9 @@ The goal is simple: make daily progress visible, measurable, and motivating.
 - 30-day analytics and consistency heatmap
 - Adjustable daily targets
 - Workout, diet, study, and interview prep cards
+- Auto-suggested daily training plan for Run/Abs and Push/Pull/Legs
+- Daily Abdul Bari and William Fiset video checkboxes
+- Daily LeetCode question tracking
 - FAANG-focused interview pipeline
 - Add, edit, advance, and delete interview entries
 - FAANG preparation roadmap
@@ -69,6 +77,18 @@ Use the dashboard buttons:
 - `Clear` removes all locally saved dashboard data.
 
 Because this app stores data locally in the browser, exporting backups regularly is recommended.
+
+## Routine Setup
+
+The dashboard assumes June 28, 2026 is a `Run + Push` day by default.
+
+You can change this inside `Daily Targets`:
+
+- `Run anchor` controls which date starts the alternate run/abs cycle.
+- `PPL anchor` controls which date starts the push-pull-legs cycle.
+- `Anchor PPL` controls whether that anchor date is Push, Pull, or Legs.
+
+This lets the app auto-suggest the correct training plan for any selected date.
 
 ## Tech Stack
 

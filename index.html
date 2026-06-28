@@ -658,6 +658,28 @@
       font-weight: 720;
     }
 
+    .plan-callout {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      padding: 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .plan-callout span {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 780;
+      text-transform: uppercase;
+      line-height: 1.25;
+    }
+
+    .plan-callout strong {
+      font-size: 1.02rem;
+      line-height: 1.25;
+    }
+
     .progress-line {
       display: grid;
       gap: 7px;
@@ -1236,7 +1258,7 @@
           </div>
           <div>
             <h1>FAANG Consistency Dashboard</h1>
-            <p><span id="dateLabel">Daily progress tracker</span><span class="brand-divider">|</span><span>Pranav</span></p>
+            <p><span id="dateLabel">Daily progress tracker</span><span class="brand-divider">|</span><span>28-year-old Indian man | Maharashtra | Lucknow</span></p>
           </div>
         </div>
         <div class="toolbar">
@@ -1365,9 +1387,25 @@
             <div class="line-track"><div id="workoutProgress" class="line-fill"></div></div>
           </div>
           <div class="field-stack">
+            <div class="plan-callout">
+              <span>Today's training plan</span>
+              <strong id="trainingPlanText">Run + Push</strong>
+            </div>
             <label class="check-row"><input data-entry="workoutDone" type="checkbox"> Workout complete</label>
+            <label class="check-row"><input data-entry="cardioCoreDone" type="checkbox"> Run or abs session done</label>
             <div class="field-grid">
               <label>Minutes <input data-entry="workoutMinutes" type="number" min="0" step="5"></label>
+              <label>PPL session
+                <select data-entry="pplSession">
+                  <option></option>
+                  <option>Push</option>
+                  <option>Pull</option>
+                  <option>Legs</option>
+                  <option>Rest</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-grid">
               <label>Type
                 <select data-entry="workoutType">
                   <option>Strength</option>
@@ -1377,14 +1415,14 @@
                   <option>Recovery</option>
                 </select>
               </label>
+              <label>Intensity
+                <select data-entry="workoutIntensity">
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </label>
             </div>
-            <label>Intensity
-              <select data-entry="workoutIntensity">
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-              </select>
-            </label>
           </div>
         </article>
 
@@ -1434,8 +1472,14 @@
           </div>
           <div class="field-stack">
             <label class="check-row"><input data-entry="studyDone" type="checkbox"> Main study block done</label>
+            <label class="check-row"><input data-entry="abdulBariVideoDone" type="checkbox"> Abdul Bari algorithm video</label>
+            <label class="check-row"><input data-entry="fisetVideoDone" type="checkbox"> William Fiset DSA video</label>
             <label>Minutes <input data-entry="studyMinutes" type="number" min="0" step="10"></label>
             <label>Topic <input data-entry="studyTopic" type="text" placeholder="DSA, system design, CS basics"></label>
+            <div class="field-grid">
+              <label>Abdul Bari video <input data-entry="abdulBariVideo" type="text" placeholder="Video title or number"></label>
+              <label>William Fiset video <input data-entry="fisetVideo" type="text" placeholder="Video title or number"></label>
+            </div>
           </div>
         </article>
 
@@ -1461,6 +1505,8 @@
               <label>Prep min <input data-entry="prepMinutes" type="number" min="0" step="10"></label>
               <label>DSA solved <input data-entry="dsaProblems" type="number" min="0" step="1"></label>
             </div>
+            <label class="check-row"><input data-entry="leetcodeDone" type="checkbox"> LeetCode question done</label>
+            <label>LeetCode problem <input data-entry="leetcodeProblem" type="text" placeholder="Problem name or number"></label>
             <div class="field-grid">
               <label>Applications <input data-entry="applications" type="number" min="0" step="1"></label>
               <label>Networking <input data-entry="networking" type="number" min="0" step="1"></label>
@@ -1487,6 +1533,15 @@
               <label>Protein g <input data-goal="protein" type="number" min="0" step="5"></label>
               <label>Water L <input data-goal="water" type="number" min="0" step="0.25"></label>
               <label>Streak score <input data-goal="streakScore" type="number" min="1" max="100" step="1"></label>
+              <label>Run anchor <input data-setting="runAnchorDate" type="date"></label>
+              <label>PPL anchor <input data-setting="pplAnchorDate" type="date"></label>
+              <label>Anchor PPL
+                <select data-setting="pplAnchorSession">
+                  <option>Push</option>
+                  <option>Pull</option>
+                  <option>Legs</option>
+                </select>
+              </label>
             </div>
           </article>
 
@@ -1738,7 +1793,10 @@
         theme: "light",
         workoutTime: "07:00",
         studyTime: "20:00",
-        prepTime: "21:30"
+        prepTime: "21:30",
+        runAnchorDate: "2026-06-28",
+        pplAnchorDate: "2026-06-28",
+        pplAnchorSession: "Push"
       },
       roadmap: roadmapTemplate.map((item) => ({ ...item, done: false })),
       dsaTopics: defaultDsaTopics
@@ -1792,9 +1850,11 @@
     function createEntry() {
       return {
         workoutDone: false,
+        cardioCoreDone: false,
         workoutMinutes: 0,
         workoutType: "Strength",
         workoutIntensity: "Medium",
+        pplSession: "",
         cleanMeals: false,
         protein: 0,
         water: 0,
@@ -1802,8 +1862,14 @@
         studyDone: false,
         studyMinutes: 0,
         studyTopic: "",
+        abdulBariVideoDone: false,
+        abdulBariVideo: "",
+        fisetVideoDone: false,
+        fisetVideo: "",
         prepMinutes: 0,
         dsaProblems: 0,
+        leetcodeDone: false,
+        leetcodeProblem: "",
         applications: 0,
         networking: 0,
         mockDone: false,
@@ -1819,6 +1885,8 @@
     function getEntry(key = selectedDate) {
       if (!state.entries[key]) {
         state.entries[key] = createEntry();
+      } else {
+        state.entries[key] = { ...createEntry(), ...state.entries[key] };
       }
       return state.entries[key];
     }
@@ -1861,13 +1929,24 @@
 
     function scoreParts(entry) {
       const goals = state.goals;
-      const workout = Math.min(25, percent(entry.workoutMinutes, goals.workoutMinutes) * 20 + (entry.workoutDone ? 5 : 0));
+      const workout = Math.min(25,
+        percent(entry.workoutMinutes, goals.workoutMinutes) * 12 +
+        (entry.workoutDone ? 4 : 0) +
+        (entry.cardioCoreDone ? 5 : 0) +
+        (entry.pplSession ? 4 : 0)
+      );
       const diet = Math.min(25, percent(entry.protein, goals.protein) * 12 + percent(entry.water, goals.water) * 8 + (entry.cleanMeals ? 5 : 0));
-      const study = Math.min(25, percent(entry.studyMinutes, goals.studyMinutes) * 20 + (entry.studyDone ? 5 : 0));
+      const study = Math.min(25,
+        percent(entry.studyMinutes, goals.studyMinutes) * 12 +
+        (entry.studyDone ? 5 : 0) +
+        (entry.abdulBariVideoDone ? 4 : 0) +
+        (entry.fisetVideoDone ? 4 : 0)
+      );
       const prep = Math.min(25,
-        percent(entry.prepMinutes, goals.prepMinutes) * 12 +
-        percent(entry.dsaProblems, 3) * 5 +
-        (entry.mockDone ? 4 : 0) +
+        percent(entry.prepMinutes, goals.prepMinutes) * 8 +
+        percent(entry.dsaProblems, 1) * 5 +
+        (entry.leetcodeDone ? 6 : 0) +
+        (entry.mockDone ? 3 : 0) +
         (entry.behaviorPractice ? 2 : 0) +
         percent(entry.applications, 2) * 1 +
         percent(entry.networking, 2) * 1
@@ -1895,6 +1974,28 @@
 
     function weekKeys() {
       return Array.from({ length: 7 }, (_, index) => addDays(selectedDate, index - 6));
+    }
+
+    function daysBetween(startKey, endKey) {
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const diff = Math.round((parseDate(endKey) - parseDate(startKey || "2026-06-28")) / msPerDay);
+      return Number.isFinite(diff) ? diff : 0;
+    }
+
+    function positiveModulo(value, size) {
+      return ((value % size) + size) % size;
+    }
+
+    function cardioCorePlan(key) {
+      const anchor = state.settings.runAnchorDate || "2026-06-28";
+      return positiveModulo(daysBetween(anchor, key), 2) === 0 ? "Run" : "Abs";
+    }
+
+    function pplPlan(key) {
+      const sessions = ["Push", "Pull", "Legs"];
+      const anchor = state.settings.pplAnchorDate || "2026-06-28";
+      const anchorIndex = Math.max(0, sessions.indexOf(state.settings.pplAnchorSession || "Push"));
+      return sessions[positiveModulo(anchorIndex + daysBetween(anchor, key), sessions.length)];
     }
 
     function getScoreTone(score) {
@@ -1979,6 +2080,8 @@
 
     function renderProgressLines(entry) {
       const goals = state.goals;
+      const runAbsPlan = cardioCorePlan(selectedDate);
+      const ppl = pplPlan(selectedDate);
       const progress = [
         ["workout", percent(entry.workoutMinutes, goals.workoutMinutes), entry.workoutMinutes + " / " + goals.workoutMinutes],
         ["diet", percent(entry.protein, goals.protein), entry.protein + " / " + goals.protein + "g"],
@@ -1993,10 +2096,17 @@
         $("#" + name + "ProgressText").textContent = text;
       });
 
-      $("#workoutSub").textContent = entry.workoutMinutes > 0 ? entry.workoutType + " - " + entry.workoutIntensity : "Match fitness for the mind and body.";
+      $("#trainingPlanText").textContent = runAbsPlan + " + " + ppl;
+      $("#workoutSub").textContent = entry.workoutMinutes > 0
+        ? runAbsPlan + " + " + (entry.pplSession || ppl) + " - " + entry.workoutIntensity
+        : runAbsPlan + " day with " + ppl + " strength.";
       $("#dietSub").textContent = entry.water > 0 ? entry.water + " L water logged" : "Fuel the Maharashtra workday.";
-      $("#studySub").textContent = entry.studyTopic ? entry.studyTopic : "FAANG fundamentals, one block at a time.";
-      $("#prepSub").textContent = entry.dsaProblems > 0 ? entry.dsaProblems + " DSA solved" : "Practice for the FAANG interview loop.";
+      $("#studySub").textContent = entry.abdulBariVideoDone && entry.fisetVideoDone
+        ? "Abdul Bari + William Fiset done."
+        : entry.studyTopic ? entry.studyTopic : "Abdul Bari + William Fiset daily videos.";
+      $("#prepSub").textContent = entry.leetcodeDone
+        ? "LeetCode done" + (entry.leetcodeProblem ? ": " + entry.leetcodeProblem : ".")
+        : entry.dsaProblems > 0 ? entry.dsaProblems + " DSA solved" : "One LeetCode question today.";
     }
 
     function renderWeeklyBars(keys, scores) {
@@ -2084,7 +2194,7 @@
       const totals = entries.reduce((acc, entry) => {
         acc.study += numberValue(entry.studyMinutes);
         acc.prep += numberValue(entry.prepMinutes);
-        acc.dsa += numberValue(entry.dsaProblems);
+        acc.dsa += Math.max(numberValue(entry.dsaProblems), entry.leetcodeDone ? 1 : 0);
         acc.applications += numberValue(entry.applications);
         const parts = scoreParts(entry);
         acc.parts.workout += parts.workout;
@@ -2308,31 +2418,54 @@
     function buildCalendarFile() {
       const start = todayKey();
       const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-      const events = [
-        ["Workout", "Match fitness: movement, strength, or recovery.", state.settings.workoutTime],
-        ["Study block", "FAANG fundamentals: DSA, CS, or system design.", state.settings.studyTime],
-        ["Interview prep", "Applications, mock practice, behavioral stories, or follow-up.", state.settings.prepTime]
-      ];
       const lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         "PRODID:-//FAANG Consistency Dashboard//EN",
         "CALSCALE:GREGORIAN"
       ];
-      events.forEach(([summary, description, time], index) => {
-        const dtStart = calendarTimestamp(start, time);
+
+      function addCalendarEvent(uid, key, time, duration, summary, description) {
         lines.push(
           "BEGIN:VEVENT",
-          "UID:faang-dashboard-" + index + "-" + start + "@local",
+          "UID:" + uid + "-" + key + "@local",
           "DTSTAMP:" + stamp,
-          "DTSTART;TZID=Asia/Kolkata:" + dtStart,
-          "DURATION:PT45M",
-          "RRULE:FREQ=DAILY;COUNT=90",
+          "DTSTART;TZID=Asia/Kolkata:" + calendarTimestamp(key, time),
+          "DURATION:" + duration,
           "SUMMARY:" + summary,
           "DESCRIPTION:" + description,
           "END:VEVENT"
         );
-      });
+      }
+
+      for (let day = 0; day < 90; day += 1) {
+        const key = addDays(start, day);
+        const training = cardioCorePlan(key) + " + " + pplPlan(key);
+        addCalendarEvent(
+          "faang-training",
+          key,
+          state.settings.workoutTime,
+          "PT45M",
+          training,
+          "Daily body plan: alternate run and abs, plus push-pull-legs strength."
+        );
+        addCalendarEvent(
+          "faang-dsa-study",
+          key,
+          state.settings.studyTime,
+          "PT60M",
+          "Abdul Bari + William Fiset videos",
+          "Watch one Abdul Bari algorithm video and one William Fiset DSA video."
+        );
+        addCalendarEvent(
+          "faang-leetcode",
+          key,
+          state.settings.prepTime,
+          "PT45M",
+          "LeetCode daily question",
+          "Solve one LeetCode question and log it in the FAANG dashboard."
+        );
+      }
       lines.push("END:VCALENDAR");
       return lines.join("\r\n");
     }

@@ -1,7 +1,7 @@
 {
   "name": "FAANG Consistency Dashboard",
   "short_name": "FAANG Prep",
-  "description": "Track workouts, diet, study, DSA, FAANG preparation, and interview progress.",
+  "description": "Track run/abs days, push-pull-legs, DSA videos, LeetCode, FAANG preparation, and interview progress.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
