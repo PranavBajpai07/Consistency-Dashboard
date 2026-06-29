@@ -2,8 +2,6 @@
 
 A personalized daily dashboard for tracking fitness, diet, study, FAANG interview preparation, and interview progress.
 
-Built for a 28-year-old Indian man living in Maharashtra, rooted in Lucknow, motivated by football discipline, and focused on becoming FAANG-ready through consistent daily execution.
-
 ## Overview
 
 This dashboard helps track the habits and preparation areas that matter most:
